@@ -40,3 +40,114 @@
 .read-the-docs {
   color: #888;
 }
+
+.otp-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.otp-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px 0 rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.otp-title {
+  margin-bottom: 1.5rem;
+  color: #3730a3;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.otp-btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.otp-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.otp-btn:hover, .otp-btn:focus {
+  background: #3730a3;
+}
+.otp-btn:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
+}
+.otp-btn-secondary {
+  background: #e0e7ff;
+  color: #3730a3;
+  margin-left: 0.5rem;
+}
+.otp-btn-secondary:hover, .otp-btn-secondary:focus {
+  background: #c7d2fe;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.otp-input {
+  padding: 0.7em 1em;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.2s;
+}
+.otp-input:focus {
+  border: 1.5px solid #6366f1;
+}
+
+.otp-msg {
+  margin-top: 1.2rem;
+  padding: 0.7em 1em;
+  border-radius: 6px;
+  font-size: 1em;
+  text-align: center;
+  font-weight: 500;
+}
+.otp-msg-info {
+  background: #f1f5f9;
+  color: #334155;
+}
+.otp-msg-success {
+  background: #d1fae5;
+  color: #047857;
+}
+.otp-msg-error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.otp-footer {
+  margin-top: 2rem;
+  color: #64748b;
+  font-size: 0.95em;
+  text-align: center;
+}

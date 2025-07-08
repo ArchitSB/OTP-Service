@@ -10,9 +10,22 @@ function App() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [msg, setMsg] = useState('');
+  const [msgType, setMsgType] = useState('info'); // 'info', 'error', 'success'
+  const [loading, setLoading] = useState(false);
+
+  const reset = () => {
+    setEmail('');
+    setPhone('');
+    setOtp('');
+    setMsg('');
+    setMsgType('info');
+    setStep('choose');
+  };
 
   const handleSendOtp = async () => {
     setMsg('');
+    setMsgType('info');
+    setLoading(true);
     try {
       const res = await fetch(`${API}/${mode}`, {
         method: 'POST',
@@ -20,15 +33,24 @@ function App() {
         body: JSON.stringify({ email, phone }),
       });
       const data = await res.json();
-      if (res.ok) setStep('verify');
+      if (res.ok) {
+        setStep('verify');
+        setMsgType('success');
+      } else {
+        setMsgType('error');
+      }
       setMsg(data.msg);
     } catch (err) {
+      setMsgType('error');
       setMsg('Network error');
     }
+    setLoading(false);
   };
 
   const handleVerifyOtp = async () => {
     setMsg('');
+    setMsgType('info');
+    setLoading(true);
     try {
       const res = await fetch(`${API}/verify`, {
         method: 'POST',
@@ -36,54 +58,91 @@ function App() {
         body: JSON.stringify({ email, phone, otp }),
       });
       const data = await res.json();
-      if (res.ok) setMsg('Success! Welcome.');
-      else setMsg(data.msg);
+      if (res.ok) {
+        setMsgType('success');
+        setMsg('Success! Welcome.');
+        setTimeout(reset, 2000);
+      } else {
+        setMsgType('error');
+        setMsg(data.msg);
+      }
     } catch (err) {
+      setMsgType('error');
       setMsg('Network error');
     }
+    setLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
-      <h2>OTP {mode === 'signup' ? 'Signup' : 'Login'}</h2>
-      {step === 'choose' && (
-        <>
-          <button onClick={() => { setMode('signup'); setStep('form'); }}>Signup</button>
-          <button onClick={() => { setMode('login'); setStep('form'); }}>Login</button>
-        </>
-      )}
-      {step === 'form' && (
-        <div>
-          <input
-            type="email"
-            placeholder="Email (optional)"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ marginBottom: 8, width: '100%' }}
-          /><br />
-          <input
-            type="text"
-            placeholder="Phone (optional)"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
-            style={{ marginBottom: 8, width: '100%' }}
-          /><br />
-          <button onClick={handleSendOtp}>Send OTP</button>
-        </div>
-      )}
-      {step === 'verify' && (
-        <div>
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={e => setOtp(e.target.value)}
-            style={{ marginBottom: 8, width: '100%' }}
-          /><br />
-          <button onClick={handleVerifyOtp}>Verify OTP</button>
-        </div>
-      )}
-      <div style={{ color: 'red', marginTop: 10 }}>{msg}</div>
+    <div className="otp-bg">
+      <div className="otp-card">
+        <h2 className="otp-title">
+          {step === 'choose' ? 'Welcome' : `OTP ${mode === 'signup' ? 'Signup' : 'Login'}`}
+        </h2>
+        {step === 'choose' && (
+          <div className="otp-btn-group">
+            <button className="otp-btn" onClick={() => { setMode('signup'); setStep('form'); }}>Signup</button>
+            <button className="otp-btn" onClick={() => { setMode('login'); setStep('form'); }}>Login</button>
+          </div>
+        )}
+        {step === 'form' && (
+          <form
+            className="otp-form"
+            onSubmit={e => { e.preventDefault(); handleSendOtp(); }}
+          >
+            <input
+              type="email"
+              placeholder="Email (optional)"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="otp-input"
+              autoFocus
+            />
+            <input
+              type="text"
+              placeholder="Phone (optional)"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              className="otp-input"
+            />
+            <button className="otp-btn" type="submit" disabled={loading}>
+              {loading ? 'Sending...' : 'Send OTP'}
+            </button>
+            <button className="otp-btn otp-btn-secondary" type="button" onClick={reset} disabled={loading}>
+              Back
+            </button>
+          </form>
+        )}
+        {step === 'verify' && (
+          <form
+            className="otp-form"
+            onSubmit={e => { e.preventDefault(); handleVerifyOtp(); }}
+          >
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={e => setOtp(e.target.value)}
+              className="otp-input"
+              autoFocus
+            />
+            <button className="otp-btn" type="submit" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify OTP'}
+            </button>
+            <button className="otp-btn otp-btn-secondary" type="button" onClick={reset} disabled={loading}>
+              Back
+            </button>
+          </form>
+        )}
+        {msg && (
+          <div className={`otp-msg otp-msg-${msgType}`}>
+            {msg}
+          </div>
+        )}
+      </div>
+      <footer className="otp-footer">
+        <span>OTP Auth Demo &copy; {new Date().getFullYear()}</span>
+      </footer>
     </div>
   );
 }

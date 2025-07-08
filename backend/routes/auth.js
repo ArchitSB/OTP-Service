@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const nodemailer = require('nodemailer');
+const authController = require('../controllers/authController');
 
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
+router.post('/verify', authController.verify);
 
+module.exports = router;
 async function sendEmail(email, otp) {
     // Use your real email credentials in production
     let transporter = nodemailer.createTransport({
