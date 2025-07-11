@@ -12,6 +12,7 @@ function App() {
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('info'); // 'info', 'error', 'success'
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const reset = () => {
     setEmail('');
@@ -19,6 +20,7 @@ function App() {
     setOtp('');
     setMsg('');
     setMsgType('info');
+    setUser(null);
     setStep('choose');
   };
 
@@ -61,7 +63,8 @@ function App() {
       if (res.ok) {
         setMsgType('success');
         setMsg('Success! Welcome.');
-        setTimeout(reset, 2000);
+        setUser(data.user);
+        setStep('success');
       } else {
         setMsgType('error');
         setMsg(data.msg);
@@ -77,14 +80,19 @@ function App() {
     <div className="otp-bg">
       <div className="otp-card">
         <h2 className="otp-title">
-          {step === 'choose' ? 'Welcome' : `OTP ${mode === 'signup' ? 'Signup' : 'Login'}`}
+          {step === 'choose' && 'Welcome'}
+          {step === 'form' && `OTP ${mode === 'signup' ? 'Signup' : 'Login'}`}
+          {step === 'verify' && 'Verify OTP'}
+          {step === 'success' && 'Welcome!'}
         </h2>
+        
         {step === 'choose' && (
           <div className="otp-btn-group">
             <button className="otp-btn" onClick={() => { setMode('signup'); setStep('form'); }}>Signup</button>
             <button className="otp-btn" onClick={() => { setMode('login'); setStep('form'); }}>Login</button>
           </div>
         )}
+
         {step === 'form' && (
           <form
             className="otp-form"
@@ -113,6 +121,7 @@ function App() {
             </button>
           </form>
         )}
+
         {step === 'verify' && (
           <form
             className="otp-form"
@@ -134,7 +143,23 @@ function App() {
             </button>
           </form>
         )}
-        {msg && (
+
+        {step === 'success' && (
+          <div className="otp-success">
+            <div className="otp-success-icon">✅</div>
+            <h3 className="otp-success-title">
+              {mode === 'signup' ? 'Account Created Successfully!' : 'Login Successful!'}
+            </h3>
+            <p className="otp-success-text">
+              Welcome {user?.email || user?.phone}!
+            </p>
+            <button className="otp-btn" onClick={reset}>
+              Continue
+            </button>
+          </div>
+        )}
+
+        {msg && step !== 'success' && (
           <div className={`otp-msg otp-msg-${msgType}`}>
             {msg}
           </div>
